@@ -6,3 +6,38 @@ output-format = "grouped"
 
 [tool.ruff.format]
 exclude = [".git", ".venv", ".mypy_cache", ".tox", "__pycache__"]
+
+[tool.poetry]
+name = "pyhelper-utils"
+version = "0.0.0"
+description = "Repository for python utilities"
+authors = ["dbasunag <dbasunag@redhat.com>"]
+license = "Apache-2.0 license"
+readme = "README.md"
+repository = "https://github.com/RedHatQE/python-utility-scripts"
+homepage = "https://github.com/RedHatQE/python-utility-scripts"
+packages = [{ include = "helper_utilities" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-simple-logger = "^1.0.19"
+
+
+[tool.poetry.group.dev.dependencies]
+ipdb = "^0.13.13"
+ipython = "*"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+pattern = "((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)"
+
+[tool.poetry-dynamic-versioning.substitution]
+files = ["VERSION"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
