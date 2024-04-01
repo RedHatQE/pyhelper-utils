@@ -7,6 +7,7 @@ LOGGER = get_logger(name=__name__)
 
 TIMEOUT_30MIN = 30 * 60
 
+
 class CommandExecFailed(Exception):
     def __init__(self, name, err=None):
         self.name = name
@@ -14,6 +15,7 @@ class CommandExecFailed(Exception):
 
     def __str__(self):
         return f"Command: {self.name} - exec failed. {self.err}"
+
 
 def run_command(
     command,
