@@ -1,7 +1,11 @@
 import re
+from time import sleep
+from functools import wraps
+from logging import Logger
+from typing import Any
 
 
-def tts(ts):
+def tts(ts: int | str) -> int:
     """
     Convert time string to seconds.
 
@@ -33,3 +37,37 @@ def tts(ts):
         return _time * 60 * 60
     else:
         return int(ts)
+
+
+def ignore_exceptions(logger: Logger = None, retry: int = 0) -> Any:
+    """
+    Decorator to ignore exceptions with support for retry.
+
+    Args:
+        logger (Logger): logger to use, if not passed no logs will be displayed.
+        retry (int): Number of retry if the underline function trow exception.
+
+    Returns:
+        any: the uderline function return value.
+    """
+
+    def wrapper(func):
+        @wraps(func)
+        def inner(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as ex:
+                if retry:
+                    for _ in range(0, retry):
+                        try:
+                            return func(*args, **kwargs)
+                        except Exception:
+                            sleep(1)
+
+                if logger:
+                    logger.info(ex)
+                return None
+
+        return inner
+
+    return wrapper
