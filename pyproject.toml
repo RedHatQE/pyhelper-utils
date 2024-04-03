@@ -53,6 +53,10 @@ ipdb = "^0.13.13"
 ipython = "*"
 
 
+
+[tool.poetry.group.test.dependencies]
+python-rrmngmnt = "^0.1.32"
+
 [tool.poetry-dynamic-versioning]
 enable = true
 pattern = "((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)"
