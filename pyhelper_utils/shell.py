@@ -2,22 +2,21 @@ import subprocess
 
 from simple_logger.logger import get_logger
 
-
 LOGGER = get_logger(name=__name__)
 
 TIMEOUT_30MIN = 30 * 60
 
 
 def run_command(
-    command,
-    verify_stderr=True,
-    shell=False,
-    timeout=None,
-    capture_output=True,
-    check=True,
-    hide_log_command=False,
+    command: list,
+    verify_stderr: bool = True,
+    shell: bool = False,
+    timeout: int = None,
+    capture_output: bool = True,
+    check: bool = True,
+    hide_log_command: bool = False,
     **kwargs,
-):
+) -> tuple:
     """
     Run command locally.
 
@@ -34,6 +33,9 @@ def run_command(
 
     Returns:
         tuple: True, out if command succeeded, False, err otherwise.
+
+    Raises:
+        CalledProcessError when check is True and command execution fails
     """
     command_for_log = ["Hide", "By", "User"] if hide_log_command else command
 
