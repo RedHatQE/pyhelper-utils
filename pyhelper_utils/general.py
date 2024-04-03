@@ -5,7 +5,7 @@ from logging import Logger
 from typing import Any
 
 
-def tts(ts: int | str) -> int:
+def tts(ts: Any) -> int:
     """
     Convert time string to seconds.
 
