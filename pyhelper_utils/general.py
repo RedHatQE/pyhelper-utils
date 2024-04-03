@@ -45,10 +45,10 @@ def ignore_exceptions(logger: Logger = None, retry: int = 0) -> Any:
 
     Args:
         logger (Logger): logger to use, if not passed no logs will be displayed.
-        retry (int): Number of retry if the underline function trow exception.
+        retry (int): Number of retry if the underline function throw exception.
 
     Returns:
-        any: the uderline function return value.
+        any: the underline function return value.
     """
 
     def wrapper(func):
