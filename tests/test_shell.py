@@ -3,7 +3,6 @@ from subprocess import CalledProcessError
 import pytest
 import subprocess
 from pyhelper_utils.shell import run_command
-from pytest_mock import mocker
 
 ERROR_MESSAGE = "Expected value {expected}, actual value {actual}"
 SUCCESSFUL_MESSAGE = "worked"
