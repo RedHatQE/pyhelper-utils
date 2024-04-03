@@ -2,6 +2,8 @@ import subprocess
 
 from simple_logger.logger import get_logger
 
+from pyhelper_utils.exceptions import CommandExecFailed
+
 LOGGER = get_logger(name=__name__)
 
 TIMEOUT_30MIN = 30 * 60
@@ -69,3 +71,45 @@ def run_command(
         return False, out_decoded, err_decoded
 
     return True, out_decoded, err_decoded
+
+
+def run_ssh_commands(
+    host,
+    commands,
+    get_pty=False,
+    check_rc=True,
+    timeout=TIMEOUT_30MIN,
+    tcp_timeout=None,
+):
+    """
+    Run commands via SSH
+
+    Args:
+        host (Host): rrmngmnt host to execute the commands from.
+        commands (list): List of multiple command lists [[cmd1, cmd2, cmd3]] or a list with a single command [cmd]
+            Examples:
+                 ["sudo", "reboot"], [["sleep", "5"], ["date"]]
+
+        get_pty (bool): get_pty parameter for remote session (equivalent to -t argument for ssh)
+        check_rc (bool): if True checks command return code and raises if rc != 0
+        timeout (int): ssh exec timeout
+        tcp_timeout (float): an optional timeout (in seconds) for the TCP connect
+
+    Returns:
+        list: List of commands output.
+
+    Raise:
+        CommandExecFailed: If command failed to execute.
+    """
+    results = []
+    commands = commands if isinstance(commands[0], list) else [commands]
+    with host.executor().session(timeout=tcp_timeout) as ssh_session:
+        for cmd in commands:
+            rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
+            LOGGER.info(f"[SSH][{host.fqdn}] Executed: {' '.join(cmd)}, rc:{rc}, out: {out}, error: {err}")
+            if rc and check_rc:
+                raise CommandExecFailed(name=cmd, err=err)
+
+            results.append(out)
+
+    return results
