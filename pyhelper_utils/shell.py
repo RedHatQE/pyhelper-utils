@@ -41,6 +41,8 @@ def run_command(
 
     LOGGER.info(f"Running {' '.join(command_for_log)} command")
 
+    # when hide_log_command is set to True, check should be set to False to avoid logging sensitive data in
+    # the exception
     sub_process = subprocess.run(
         command,
         capture_output=capture_output,

@@ -1,9 +1,8 @@
 import shlex
 from subprocess import CalledProcessError
 import pytest
-
+import subprocess
 from pyhelper_utils.shell import run_command
-from unittest.mock import MagicMock, patch
 
 ERROR_MESSAGE = "Expected value {expected}, actual value {actual}"
 SUCCESSFUL_MESSAGE = "worked"
@@ -27,12 +26,11 @@ def test_run_command_no_verify_raises_exception():
         run_command(command=shlex.split("false"), check=True, verify_stderr=False)
 
 
-@patch("pyhelper_utils.shell.subprocess.run")
-def test_run_command_error(mock_run):
-    mock_out = MagicMock()
-    mock_out.configure_mock(**{"stdout": "", "stderr": FAILURE_MESSAGE, "returncode": 0})
-
-    mock_run.return_value = mock_out
+def test_run_command_error(mocker):
+    mocker.patch(
+        "pyhelper_utils.shell.subprocess.run",
+        return_value=subprocess.CompletedProcess(args=None, stderr=FAILURE_MESSAGE, returncode=0, stdout=""),
+    )
     rc, out, error = run_command(command=shlex.split("true"), capture_output=False, check=False, shell=True)
     assert not rc, ERROR_MESSAGE.format(expected=False, actual=rc)
     assert FAILURE_MESSAGE in error, ERROR_MESSAGE.format(expected=FAILURE_MESSAGE, actual="error")
