@@ -35,7 +35,7 @@ def run_command(
         tuple: True, out if command succeeded, False, err otherwise.
 
     Raises:
-        CalledProcessError when check is True and command execution fails
+        CalledProcessError: when check is True and command execution fails
     """
     command_for_log = ["Hide", "By", "User"] if hide_log_command else command
 
