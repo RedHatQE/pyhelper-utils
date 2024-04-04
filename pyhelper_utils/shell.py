@@ -81,7 +81,7 @@ def run_ssh_commands(
     get_pty: bool = False,
     check_rc: bool = True,
     timeout: int = TIMEOUT_30MIN,
-    tcp_timeout: float = None,
+    tcp_timeout: float = None,  # type: ignore[assignment]
 ) -> list:
     """
     Run commands on remote host via SSH
