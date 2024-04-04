@@ -82,7 +82,7 @@ def run_ssh_commands(
     tcp_timeout=None,
 ):
     """
-    Run commands via SSH
+    Run commands on remote host via SSH
 
     Args:
         host (Host): rrmngmnt host to execute the commands from.
