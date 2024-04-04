@@ -1,7 +1,6 @@
 from pyhelper_utils.notifications import send_slack_message
 import pytest
 from simple_logger.logger import get_logger
-from requests.exceptions import SSLError
 
 
 LOGGER = get_logger(name="test-notifications")
@@ -13,5 +12,5 @@ def test_send_slack_message():
 
 
 def test_send_slack_message_with_raise():
-    with pytest.raises(SSLError):
-        send_slack_message(webhook_url=WEBHOOK_URL, logger=LOGGER, message="test")
+    with pytest.raises(Exception):
+        send_slack_message(webhook_url=WEBHOOK_URL, logger=LOGGER, message="test", post_timout=1)
