@@ -1,12 +1,13 @@
 from logging import Logger
+from typing import Optional
 import requests
 import json
 
 
 def send_slack_message(
     message: str,
-    webhook_url: str = None,
-    logger: Logger = None,
+    webhook_url: Optional[str] = None,
+    logger: Optional[Logger] = None,
     post_timout: int = 30,
     raise_on_error: bool = True,
 ) -> None:
