@@ -2,7 +2,7 @@ import re
 from time import sleep
 from functools import wraps
 from logging import Logger
-from typing import Any
+from typing import Any, Optional
 
 
 def tts(ts: Any) -> int:
@@ -22,9 +22,9 @@ def tts(ts: Any) -> int:
     Returns:
         int: Time in seconds
     """
-    try:
-        time_and_unit = re.match(r"(?P<time>\d+)(?P<unit>\w)", str(ts)).groupdict()
-    except AttributeError:
+    if time_and_unit_match := re.match(r"(?P<time>\d+)(?P<unit>\w)", str(ts)):
+        time_and_unit = time_and_unit_match.groupdict()
+    else:
         return int(ts)
 
     _time = int(time_and_unit["time"])
@@ -39,7 +39,7 @@ def tts(ts: Any) -> int:
         return int(ts)
 
 
-def ignore_exceptions(logger: Logger = None, retry: int = 0) -> Any:
+def ignore_exceptions(logger: Optional[Logger] = None, retry: int = 0) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
 

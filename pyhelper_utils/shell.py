@@ -1,4 +1,5 @@
 import subprocess
+from typing import Optional
 
 from simple_logger.logger import get_logger
 
@@ -14,7 +15,7 @@ def run_command(
     command: list,
     verify_stderr: bool = True,
     shell: bool = False,
-    timeout: int = None,
+    timeout: Optional[int] = None,
     capture_output: bool = True,
     check: bool = True,
     hide_log_command: bool = False,
