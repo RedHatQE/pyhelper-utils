@@ -7,6 +7,7 @@ def send_slack_message(
     message: str,
     webhook_url: str = None,
     logger: Logger = None,
+    post_timout: int = 30,
     raise_on_error: bool = True,
 ) -> None:
     """
@@ -16,6 +17,8 @@ def send_slack_message(
         message (str): message to send.
         webhook_url (str): slack webhook url.
         logger (Logger): logger to use, if not passed no logs will be displayed.
+        post_timout (int): Timeout in seconds to send to request.post.
+        raise_on_error (bool): Raise exception if error.
     """
     try:
         if webhook_url:
@@ -27,6 +30,7 @@ def send_slack_message(
                 webhook_url,
                 data=json.dumps(slack_data),
                 headers={"Content-Type": "application/json"},
+                timeout=post_timout,
             )
             if response.status_code != 200:
                 if logger:
