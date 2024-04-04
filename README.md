@@ -6,7 +6,6 @@ Repository for various python utilities
 pip3 install pyhelper-utils
 ```
 
-
 ## Release new version
 ### requirements:
 * Export GitHub token
@@ -33,4 +32,18 @@ To create a new release, run:
 git checkout main
 git pull
 release-it # Follow the instructions
+```
+
+### Examples:
+run_ssh_command():
+Enables running a command against a remote server over SSH. It expects a host object, created using [python-rrmngmnt](https://github.com/rhevm-qe-automation/python-rrmngmnt/blob/master/README.rst).
+
+#### Sample code:
+
+```bash
+from rrmngmnt import Host, UserWithPKey
+host = Host("1.1.1.1")
+user = UserWithPKey('user', '/path/to/pkey'))
+host.executor_user =  user
+run_ssh_command(host=host, commands=shlex.split("ls -l"))
 ```

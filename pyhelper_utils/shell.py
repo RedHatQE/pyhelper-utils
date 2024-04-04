@@ -3,6 +3,7 @@ import subprocess
 from simple_logger.logger import get_logger
 
 from pyhelper_utils.exceptions import CommandExecFailed
+from rrmngmnt import Host
 
 LOGGER = get_logger(name=__name__)
 
@@ -74,13 +75,13 @@ def run_command(
 
 
 def run_ssh_commands(
-    host,
-    commands,
-    get_pty=False,
-    check_rc=True,
-    timeout=TIMEOUT_30MIN,
-    tcp_timeout=None,
-):
+    host: Host,
+    commands: list,
+    get_pty: bool = False,
+    check_rc: bool = True,
+    timeout: int = TIMEOUT_30MIN,
+    tcp_timeout: float = None,
+) -> list:
     """
     Run commands on remote host via SSH
 
