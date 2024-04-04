@@ -12,6 +12,6 @@ def test_send_slack_message():
     send_slack_message(webhook_url=WEBHOOK_URL, message="test", logger=LOGGER, raise_on_error=False)
 
 
-def test_send_slack_message_wit_raise():
+def test_send_slack_message_with_raise():
     with pytest.raises(SSLError):
         send_slack_message(webhook_url=WEBHOOK_URL, logger=LOGGER, message="test")
