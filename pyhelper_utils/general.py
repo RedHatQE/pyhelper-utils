@@ -65,7 +65,7 @@ def ignore_exceptions(logger: Optional[Logger] = None, retry: int = 0) -> Any:
                             sleep(1)
 
                 if logger:
-                    logger.info(ex)
+                    logger.info(f"{func.__name__} error: {ex}")
                 return None
 
         return inner
