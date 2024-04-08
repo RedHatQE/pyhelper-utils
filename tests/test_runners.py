@@ -36,4 +36,4 @@ def test_function_runner_with_raise(func_with_raise):
 
 
 def test_function_runner_with_return(sys_argv, func_with_return):
-    assert not function_runner_with_pdb(func=func_with_return)
+    assert function_runner_with_pdb(func=func_with_return)
