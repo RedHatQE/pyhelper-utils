@@ -2,7 +2,7 @@
 omit = ["tests/*"]
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 90
 skip_empty = true
 
 [tool.coverage.html]
@@ -41,6 +41,8 @@ classifiers = [
 python = "^3.8"
 python-simple-logger = "^1.0.19"
 requests = "^2.31.0"
+rich = "^13.7.1"
+ipdb = "^0.13.13"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.1.1"
@@ -49,7 +51,6 @@ pytest-mock = "^3.14.0"
 
 
 [tool.poetry.group.dev.dependencies]
-ipdb = "^0.13.13"
 ipython = "*"
 
 
