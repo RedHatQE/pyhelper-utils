@@ -2,13 +2,13 @@ import time
 import rich
 import datetime
 import sys
-from typing import Callable
+from typing import Callable, Any
 from simple_logger.logger import get_logger
 
 LOGGER = get_logger(name="runners")
 
 
-def function_runner_with_pdb(func: Callable, dry_run: bool = False):
+def function_runner_with_pdb(func: Callable, dry_run: bool = False) -> Any:
     """
     Run function with support to drop into pdb.
 
@@ -30,12 +30,18 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False):
     Args:
         func (Callable): Function to run
         dry_run (bool, optional): Run without drop into pdb. Defaults to False.
+
+    Returns:
+        None: if execution was successful.
+
+    Raises:
+        SystemExit: If --pdb is not in sys.argv and execution failed
     """
     start_time = time.time()
     should_raise = False
 
     try:
-        func()
+        return func()
     except Exception as ex:
         if "--pdb" in sys.argv:
             _, _, tb = sys.exc_info()
@@ -46,6 +52,7 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False):
             rich.print(f"{func.__name__}: Failed to execute with Error {ex}")
             should_raise = True
     finally:
-        rich.print(f"Total execution time: {datetime.timedelta(seconds=time.time() - start_time)}")
+        total_time = datetime.timedelta(seconds=time.time() - start_time)
+        rich.print(f"Total execution time: {total_time}")
         if should_raise:
             sys.exit(1)
