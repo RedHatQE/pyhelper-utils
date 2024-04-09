@@ -90,7 +90,8 @@ def run_ssh_commands(
         host (Host): rrmngmnt host to execute the commands from.
         commands (list): List of multiple command lists [[cmd1, cmd2, cmd3]] or a list with a single command [cmd]
             Examples:
-                 ["sudo", "reboot"], [["sleep", "5"], ["date"]]
+                 single command: shlex.split("sudo reboot"),
+                 multiple commands: [shlex.split("sleep 5"), shlex.split("date")]
 
         get_pty (bool): get_pty parameter for remote session (equivalent to -t argument for ssh)
         check_rc (bool): if True checks command return code and raises if rc != 0

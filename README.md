@@ -35,7 +35,6 @@ release-it # Follow the instructions
 ```
 
 ### Examples:
-run_ssh_command():
 Enables running a command against a remote server over SSH. It expects a host object, created using [python-rrmngmnt](https://github.com/rhevm-qe-automation/python-rrmngmnt).
 
 #### Sample code:
