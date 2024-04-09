@@ -49,7 +49,7 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False) -> Any:
                 ipdb = __import__("ipdb")  # Bypass debug-statements pre-commit hook
                 ipdb.post_mortem(tb)
         else:
-            rich.print(f"{func.__name__}: Failed to execute with Error {ex}")
+            rich.print(f"Failed to execute with Error {ex}")
             should_raise = True
     finally:
         total_time = datetime.timedelta(seconds=time.time() - start_time)
