@@ -8,7 +8,7 @@ from simple_logger.logger import get_logger
 LOGGER = get_logger(name="runners")
 
 
-def function_runner_with_pdb(func: Callable, dry_run: bool = False) -> Any:
+def function_runner_with_pdb(func: Callable, dry_run: bool = False, *args, **kwargs) -> Any:
     """
     Run function with support to drop into pdb.
 
@@ -41,7 +41,7 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False) -> Any:
     should_raise = False
 
     try:
-        return func()
+        return func(*args, **kwargs)
     except Exception as ex:
         if "--pdb" in sys.argv:
             _, _, tb = sys.exc_info()
