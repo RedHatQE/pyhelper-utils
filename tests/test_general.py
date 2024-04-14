@@ -5,7 +5,7 @@ import logging
 
 @pytest.fixture
 def func_for_ignore_exception():
-    @ignore_exceptions(logger=logging.getLogger(), retry_interval=1)
+    @ignore_exceptions(logger=logging.getLogger(), retry=1, retry_interval=1)
     def _foo():
         raise ValueError()
 
