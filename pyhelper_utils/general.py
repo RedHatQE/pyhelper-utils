@@ -39,7 +39,9 @@ def tts(ts: Any) -> int:
         return int(ts)
 
 
-def ignore_exceptions(logger: Optional[Logger] = None, retry_interval: int = 1, return_on_error: Any = None) -> Any:
+def ignore_exceptions(
+    logger: Optional[Logger] = None, retry: int = 0, retry_interval: int = 1, return_on_error: Any = None
+) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
 
@@ -59,9 +61,9 @@ def ignore_exceptions(logger: Optional[Logger] = None, retry_interval: int = 1, 
             try:
                 return func(*args, **kwargs)
             except Exception as ex:
-                if retry_interval:
+                if retry:
                     sleep(retry_interval)
-                    for _ in range(0, retry_interval):
+                    for _ in range(0, retry):
                         try:
                             return func(*args, **kwargs)
                         except Exception:
