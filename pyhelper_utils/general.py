@@ -1,8 +1,9 @@
+from __future__ import annotations
 import re
 from time import sleep
 from functools import wraps
 from logging import Logger
-from typing import Any, Optional
+from typing import Any
 
 
 def tts(ts: Any) -> int:
@@ -40,16 +41,20 @@ def tts(ts: Any) -> int:
 
 
 def ignore_exceptions(
-    logger: Optional[Logger] = None, retry: int = 0, retry_interval: int = 1, return_on_error: Any = None
+    retry: int = 0,
+    retry_interval: int = 1,
+    return_on_error: Any = None,
+    logger: Logger | None = None,
 ) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
 
     Args:
-        logger (Logger): logger to use, if not passed no logs will be displayed.
         retry (int): Number of retry if the underline function throw exception.
         retry_interval (int): Number of seconds to wait between retries.
         return_on_error (Any): Return value if the underline function throw exception.
+        logger (Logger): logger to use, if not passed no logs will be displayed.
+
 
     Returns:
         any: the underline function return value.
