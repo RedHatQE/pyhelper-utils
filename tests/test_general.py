@@ -29,6 +29,7 @@ def test_tts():
 
 def test_ignore_exceptions(func_for_ignore_exception):
     assert not isinstance(func_for_ignore_exception(), Exception)
+    assert not func_for_ignore_exception()
 
 
 def test_ignore_exceptions_with_return_value(func_for_ignore_exception_with_return_value_on_error):
