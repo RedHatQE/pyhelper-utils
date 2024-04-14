@@ -39,13 +39,14 @@ def tts(ts: Any) -> int:
         return int(ts)
 
 
-def ignore_exceptions(logger: Optional[Logger] = None, retry: int = 0, retern_on_error: Any = None) -> Any:
+def ignore_exceptions(logger: Optional[Logger] = None, retry: int = 0, return_on_error: Any = None) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
 
     Args:
         logger (Logger): logger to use, if not passed no logs will be displayed.
         retry (int): Number of retry if the underline function throw exception.
+        return_on_error (Any): Return value if the underline function throw exception.
 
     Returns:
         any: the underline function return value.
@@ -66,7 +67,7 @@ def ignore_exceptions(logger: Optional[Logger] = None, retry: int = 0, retern_on
 
                 if logger:
                     logger.info(f"{func.__name__} error: {ex}")
-                return retern_on_error
+                return return_on_error
 
         return inner
 
