@@ -12,6 +12,14 @@ FAILURE_MESSAGE = "No such file"
 TEST_COMMAND = "test"
 
 
+@pytest.fixture()
+def mocked_host(mocker):
+    host = mocker.MagicMock(spec=Host)
+    host.executor = mocker.MagicMock()
+    host.executor.session = mocker.MagicMock(spec=ssh)
+    return host
+
+
 def test_run_command_return_true():
     rc, out, error = run_command(command=shlex.split(f"echo '{SUCCESSFUL_MESSAGE}'"), check=False)
     assert rc, ERROR_MESSAGE.format(expected=True, actual=rc)
@@ -38,14 +46,6 @@ def test_run_command_error(mocker):
     assert not rc, ERROR_MESSAGE.format(expected=False, actual=rc)
     assert FAILURE_MESSAGE in error, ERROR_MESSAGE.format(expected=FAILURE_MESSAGE, actual="error")
     assert not out, ERROR_MESSAGE.format(expected="", actual=out)
-
-
-@pytest.fixture()
-def mocked_host(mocker):
-    host = mocker.MagicMock(spec=Host)
-    host.executor = mocker.MagicMock()
-    host.executor.session = mocker.MagicMock(spec=ssh)
-    return host
 
 
 def test_run_ssh_commands_command(mocked_host):
