@@ -75,7 +75,7 @@ def ignore_exceptions(
                             sleep(retry_interval)
 
                 if logger:
-                    logger.info(f"{func.__name__} error: {ex}")
+                    logger.error(f"{func.__name__} error: {ex}")
                 return return_on_error
 
         return inner
