@@ -8,7 +8,7 @@ from simple_logger.logger import get_logger
 LOGGER = get_logger(name="runners")
 
 
-def function_runner_with_pdb(func: Callable, dry_run: bool = False, *args, **kwargs) -> Any:
+def function_runner_with_pdb(func: Callable, dry_run: bool = False, *args: Any, **kwargs: Any) -> Any:
     """
     Run function with support to drop into pdb.
 
