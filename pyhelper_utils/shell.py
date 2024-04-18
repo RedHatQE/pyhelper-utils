@@ -1,5 +1,5 @@
 import subprocess
-from typing import Optional
+from typing import Any, List, Optional
 
 from simple_logger.logger import get_logger
 
@@ -12,15 +12,15 @@ TIMEOUT_30MIN = 30 * 60
 
 
 def run_command(
-    command: list,
+    command: List[str],
     verify_stderr: bool = True,
     shell: bool = False,
     timeout: Optional[int] = None,
     capture_output: bool = True,
     check: bool = True,
     hide_log_command: bool = False,
-    **kwargs,
-) -> tuple:
+    **kwargs: Any,
+) -> tuple[bool, str, str]:
     """
     Run command locally.
 

@@ -3,7 +3,7 @@ import re
 from time import sleep
 from functools import wraps
 from logging import Logger
-from typing import Any
+from typing import Any, Callable
 
 
 def tts(ts: Any) -> int:
@@ -60,9 +60,9 @@ def ignore_exceptions(
         any: the underline function return value.
     """
 
-    def wrapper(func):
+    def wrapper(func: Callable) -> Callable:
         @wraps(func)
-        def inner(*args, **kwargs):
+        def inner(*args: Any, **kwargs: Any) -> Any:
             try:
                 return func(*args, **kwargs)
             except Exception as ex:
