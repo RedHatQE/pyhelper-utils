@@ -104,7 +104,7 @@ def run_ssh_commands(
     Raise:
         CommandExecFailed: If command failed to execute.
     """
-    results = []
+    results: List[str] = []
     commands: List[List[str]] = commands if isinstance(commands[0], list) else [commands]
     with host.executor().session(timeout=tcp_timeout) as ssh_session:
         for cmd in commands:
