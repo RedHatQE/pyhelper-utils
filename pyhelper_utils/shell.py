@@ -77,7 +77,7 @@ def run_command(
 
 def run_ssh_commands(
     host: Host,
-    commands: list,
+    commands: List[str],
     get_pty: bool = False,
     check_rc: bool = True,
     timeout: int = TIMEOUT_30MIN,
