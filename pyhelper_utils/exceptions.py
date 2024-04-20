@@ -1,8 +1,8 @@
-from typing import Optional
+from __future__ import annotations
 
 
 class CommandExecFailed(Exception):
-    def __init__(self, name: str, err: Optional[str] = None) -> None:
+    def __init__(self, name: str, err: str | None = None) -> None:
         self.name = name
         self.err = f"Error: {err}" if err else ""
 
