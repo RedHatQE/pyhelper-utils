@@ -1,5 +1,5 @@
 import subprocess
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Tuple
 
 from simple_logger.logger import get_logger
 
@@ -20,7 +20,7 @@ def run_command(
     check: bool = True,
     hide_log_command: bool = False,
     **kwargs: Any,
-) -> tuple[bool, str, str]:
+) -> Tuple[bool, str, str]:
     """
     Run command locally.
 
