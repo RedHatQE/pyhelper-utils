@@ -43,6 +43,7 @@ python-simple-logger = "^1.0.19"
 requests = "^2.31.0"
 rich = "^13.7.1"
 ipdb = "^0.13.13"
+python-rrmngmnt = "^0.1.32"
 
 [tool.poetry.group.tests.dependencies]
 pytest = "^8.1.1"
@@ -52,6 +53,7 @@ pytest-mock = "^3.14.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "*"
+
 
 
 [tool.poetry-dynamic-versioning]

@@ -3,6 +3,9 @@ from typing import Any, List, Optional, Tuple
 
 from simple_logger.logger import get_logger
 
+from pyhelper_utils.exceptions import CommandExecFailed
+from rrmngmnt import Host
+
 LOGGER = get_logger(name=__name__)
 
 TIMEOUT_30MIN = 30 * 60
@@ -70,3 +73,46 @@ def run_command(
         return False, out_decoded, err_decoded
 
     return True, out_decoded, err_decoded
+
+
+def run_ssh_commands(
+    host: Host,
+    commands: List[str],
+    get_pty: bool = False,
+    check_rc: bool = True,
+    timeout: int = TIMEOUT_30MIN,
+    tcp_timeout: Optional[float] = None,
+) -> list:
+    """
+    Run commands on remote host via SSH
+
+    Args:
+        host (Host): rrmngmnt host to execute the commands from.
+        commands (list): List of multiple command lists [[cmd1, cmd2, cmd3]] or a list with a single command [cmd]
+            Examples:
+                 single command: shlex.split("sudo reboot"),
+                 multiple commands: [shlex.split("sleep 5"), shlex.split("date")]
+
+        get_pty (bool): get_pty parameter for remote session (equivalent to -t argument for ssh)
+        check_rc (bool): if True checks command return code and raises if rc != 0
+        timeout (int): ssh exec timeout
+        tcp_timeout (float): an optional timeout (in seconds) for the TCP connect
+
+    Returns:
+        list: List of commands output.
+
+    Raise:
+        CommandExecFailed: If command failed to execute.
+    """
+    results: List[str] = []
+    commands_list: List[List[str]] = commands if isinstance(commands[0], list) else [commands]
+    with host.executor().session(timeout=tcp_timeout) as ssh_session:
+        for cmd in commands_list:
+            rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
+            LOGGER.info(f"[SSH][{host.fqdn}] Executed: {' '.join(cmd)}, rc:{rc}, out: {out}, error: {err}")
+            if rc and check_rc:
+                raise CommandExecFailed(name=" ".join(cmd), err=err)
+
+            results.append(out)
+
+    return results
