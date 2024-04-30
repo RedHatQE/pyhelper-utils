@@ -1,4 +1,5 @@
 from __future__ import annotations
+import datetime
 import re
 from time import sleep
 from functools import wraps
@@ -81,3 +82,47 @@ def ignore_exceptions(
         return inner
 
     return wrapper
+
+
+def stt(seconds: int) -> str:
+    """
+    Convert seconds to human readable time string.
+
+    Args:
+        seconds (int): seconds to convert
+
+    Returns:
+        str: Human readable time string
+
+    Example:
+        >>> stt(seconds=3600)
+        '1 hour'
+        >>> stt(seconds=3600*24)
+        '1 day'
+        >>> stt((60*60*14+65))
+        '14 hours and 1 minute and 5 seconds'
+    """
+    time_str = ""
+    total_seconds = datetime.timedelta(seconds=seconds)
+    days = total_seconds.days
+    total_time = datetime.datetime.strptime(str(datetime.timedelta(seconds=total_seconds.seconds)), "%H:%M:%S")
+    hour, minute, second = total_time.hour, total_time.minute, total_time.second
+    if days:
+        time_str += f"{days} {'days' if days > 1 else 'day'}"
+
+    if hour:
+        if days:
+            time_str += " and "
+        time_str += f"{hour} {'hours' if hour > 1 else 'hour'}"
+
+    if minute:
+        if hour or days:
+            time_str += " and "
+        time_str += f"{minute} {'minutes' if minute > 1 else 'minute'}"
+
+    if total_time.second:
+        if hour or minute:
+            time_str += " and "
+        time_str += f"{second} {'seconds' if second > 1 else 'second'}"
+
+    return time_str
