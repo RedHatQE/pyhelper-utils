@@ -1,4 +1,4 @@
-from pyhelper_utils.general import tts, ignore_exceptions
+from pyhelper_utils.general import stt, tts, ignore_exceptions
 import pytest
 import logging
 
@@ -34,3 +34,11 @@ def test_ignore_exceptions(func_for_ignore_exception):
 
 def test_ignore_exceptions_with_return_value(func_for_ignore_exception_with_return_value_on_error):
     assert func_for_ignore_exception_with_return_value_on_error() == "test"
+
+
+def test_stt():
+    assert stt(3600) == "1 hour"
+    assert stt(3600 * 24) == "1 day"
+    assert stt((60 * 60 * 14 + 65)) == "14 hours and 1 minute and 5 seconds"
+    assert stt(30) == "30 seconds"
+    assert stt(90) == "1 minute and 30 seconds"
