@@ -1,4 +1,4 @@
-from pyhelper_utils.general import stt, tts, ignore_exceptions
+from pyhelper_utils.general import stt, tts, ignore_exceptions, retry_on_exception
 import pytest
 import logging
 
@@ -21,6 +21,24 @@ def func_for_ignore_exception_with_return_value_on_error():
     return _foo
 
 
+@pytest.fixture
+def func_for_retry_on_exception(mocker):
+    mock_func = mocker.Mock(side_effect=ValueError())
+    mock_func.__name__ = "mock_func"
+    _foo = retry_on_exception(logger=logging.getLogger(), retry=1, retry_interval=1)(mock_func)
+    _foo.mock_func = _foo.__wrapped__
+    return _foo
+
+
+@pytest.fixture
+def func_for_no_retry_no_exception(mocker):
+    mock_func = mocker.Mock()
+    mock_func.__name__ = "mock_func"
+    _foo = retry_on_exception(logger=logging.getLogger(), retry=1, retry_interval=1)(mock_func)
+    _foo.mock_func = _foo.__wrapped__
+    return _foo
+
+
 def test_tts():
     assert tts("1m") == 60
     assert tts("1h") == 3600
@@ -34,6 +52,17 @@ def test_ignore_exceptions(func_for_ignore_exception):
 
 def test_ignore_exceptions_with_return_value(func_for_ignore_exception_with_return_value_on_error):
     assert func_for_ignore_exception_with_return_value_on_error() == "test"
+
+
+def test_retries_on_exception(func_for_retry_on_exception):
+    with pytest.raises(ValueError):
+        func_for_retry_on_exception()
+    assert func_for_retry_on_exception.mock_func.call_count == 2
+
+
+def test_no_retries_no_exception(func_for_no_retry_no_exception):
+    func_for_no_retry_no_exception()
+    assert func_for_no_retry_no_exception.mock_func.call_count == 1
 
 
 def test_stt():
