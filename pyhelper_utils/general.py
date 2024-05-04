@@ -104,11 +104,11 @@ def retry_on_exception(
     def wrapper(func: Callable) -> Callable:
         @wraps(func)
         def inner(*args: Any, **kwargs: Any) -> Any:
-            for i in range(retry + 1):
+            for idx in range(retry + 1):
                 try:
                     return func(*args, **kwargs)
                 except Exception as ex:
-                    if i < retry:
+                    if idx < retry:
                         sleep(retry_interval)
                     else:
                         if logger:
