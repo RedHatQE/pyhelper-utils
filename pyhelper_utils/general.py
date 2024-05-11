@@ -42,6 +42,7 @@ def tts(ts: Any) -> int:
 
 
 def ignore_exceptions(
+    raise_final_exception: bool = False,
     retry: int = 0,
     retry_interval: int = 1,
     return_on_error: Any = None,
@@ -51,6 +52,7 @@ def ignore_exceptions(
     Decorator to ignore exceptions with support for retry.
 
     Args:
+        raise_final_exception (bool): whether to raise the final exception.
         retry (int): Number of retry if the underline function throw exception.
         retry_interval (int): Number of seconds to wait between retries.
         return_on_error (Any): Return value if the underline function throw exception.
@@ -67,53 +69,18 @@ def ignore_exceptions(
             try:
                 return func(*args, **kwargs)
             except Exception as ex:
-                if retry:
-                    sleep(retry_interval)
-                    for _ in range(0, retry):
-                        try:
-                            return func(*args, **kwargs)
-                        except Exception:
-                            sleep(retry_interval)
-
+                for idx in range(0, retry):
+                    try:
+                        sleep(retry_interval)
+                        return func(*args, **kwargs)
+                    except Exception as retry_ex:
+                        if idx + 1 < retry:
+                            continue
+                        if raise_final_exception:
+                            raise retry_ex
                 if logger:
                     logger.error(f"{func.__name__} error: {ex}")
                 return return_on_error
-
-        return inner
-
-    return wrapper
-
-
-def retry_on_exception(
-    retry: int = 0,
-    retry_interval: int = 1,
-    logger: Logger | None = None,
-) -> Any:
-    """
-    Decorator to retry a function on exceptions until the retry limit is reached.
-
-    Args:
-        retry (int): Number of retries to attempt (excluding initial attempt) before throwing an exception.
-        retry_interval (int): Number of seconds to wait between retries.
-        logger (Logger): logger to use, if not passed no logs will be displayed.
-
-    Returns:
-        any: the underline function return value.
-    """
-
-    def wrapper(func: Callable) -> Callable:
-        @wraps(func)
-        def inner(*args: Any, **kwargs: Any) -> Any:
-            for idx in range(retry + 1):
-                try:
-                    return func(*args, **kwargs)
-                except Exception as ex:
-                    if idx < retry:
-                        sleep(retry_interval)
-                    else:
-                        if logger:
-                            logger.error(f"{func.__name__} error: {ex}")
-                        raise
 
         return inner
 
