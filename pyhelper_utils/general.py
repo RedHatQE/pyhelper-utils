@@ -42,21 +42,21 @@ def tts(ts: Any) -> int:
 
 
 def ignore_exceptions(
-    raise_final_exception: bool = False,
     retry: int = 0,
     retry_interval: int = 1,
     return_on_error: Any = None,
     logger: Logger | None = None,
+    raise_final_exception: bool = False,
 ) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
 
     Args:
-        raise_final_exception (bool): whether to raise the final exception.
         retry (int): Number of retry if the underline function throw exception.
         retry_interval (int): Number of seconds to wait between retries.
         return_on_error (Any): Return value if the underline function throw exception.
         logger (Logger): logger to use, if not passed no logs will be displayed.
+        raise_final_exception (bool): whether to raise the final exception.
 
 
     Returns:
