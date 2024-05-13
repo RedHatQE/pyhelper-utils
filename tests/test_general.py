@@ -21,15 +21,6 @@ def func_for_ignore_exception_with_return_value_on_error():
     return _foo
 
 
-@pytest.fixture
-def func_for_ignore_exception_raise_final_exception():
-    @ignore_exceptions(retry=1, retry_interval=1, raise_final_exception=True)
-    def _foo():
-        raise ValueError()
-
-    return _foo
-
-
 def test_tts():
     assert tts("1m") == 60
     assert tts("1h") == 3600
@@ -45,9 +36,13 @@ def test_ignore_exceptions_with_return_value(func_for_ignore_exception_with_retu
     assert func_for_ignore_exception_with_return_value_on_error() == "test"
 
 
-def test_ignore_exception_raise_final_exception(func_for_ignore_exception_raise_final_exception):
+def test_ignore_exception_raise_final_exception():
+    @ignore_exceptions(retry=1, retry_interval=1, raise_final_exception=True)
+    def _foo():
+        raise ValueError()
+
     with pytest.raises(ValueError):
-        func_for_ignore_exception_raise_final_exception()
+        _foo()
 
 
 def test_stt():
