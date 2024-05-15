@@ -36,6 +36,15 @@ def test_ignore_exceptions_with_return_value(func_for_ignore_exception_with_retu
     assert func_for_ignore_exception_with_return_value_on_error() == "test"
 
 
+def test_ignore_exception_raise_final_exception():
+    @ignore_exceptions(retry=1, retry_interval=1, raise_final_exception=True)
+    def _foo():
+        raise ValueError()
+
+    with pytest.raises(ValueError):
+        _foo()
+
+
 def test_stt():
     assert stt(3600) == "1 hour"
     assert stt(3600 * 24) == "1 day"

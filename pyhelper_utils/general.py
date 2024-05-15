@@ -46,6 +46,7 @@ def ignore_exceptions(
     retry_interval: int = 1,
     return_on_error: Any = None,
     logger: Logger | None = None,
+    raise_final_exception: bool = False,
 ) -> Any:
     """
     Decorator to ignore exceptions with support for retry.
@@ -55,6 +56,7 @@ def ignore_exceptions(
         retry_interval (int): Number of seconds to wait between retries.
         return_on_error (Any): Return value if the underline function throw exception.
         logger (Logger): logger to use, if not passed no logs will be displayed.
+        raise_final_exception (bool): whether to raise the final exception.
 
 
     Returns:
@@ -67,14 +69,15 @@ def ignore_exceptions(
             try:
                 return func(*args, **kwargs)
             except Exception as ex:
-                if retry:
-                    sleep(retry_interval)
-                    for _ in range(0, retry):
-                        try:
-                            return func(*args, **kwargs)
-                        except Exception:
-                            sleep(retry_interval)
-
+                for idx in range(0, retry):
+                    try:
+                        sleep(retry_interval)
+                        return func(*args, **kwargs)
+                    except Exception as retry_ex:
+                        if idx + 1 < retry:
+                            continue
+                        if raise_final_exception:
+                            raise retry_ex
                 if logger:
                     logger.error(f"{func.__name__} error: {ex}")
                 return return_on_error
