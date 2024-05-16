@@ -2,7 +2,17 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "matchPackagePatterns": ["pytest", "pytest-cov", "ipdb", "ipython"],
+      "matchPackagePatterns": [
+        "python-simple-logger",
+        "requests",
+        "rich",
+        "ipdb",
+        "python-rrmngmnt",
+        "pytest",
+        "pytest-cov",
+        "pytest-mock ",
+        "ipython"
+      ],
       "groupName": "poetry-deps"
     }
   ]
