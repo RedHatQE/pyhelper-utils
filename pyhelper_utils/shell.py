@@ -35,6 +35,7 @@ def run_command(
             CalledProcessError
         hide_log_command (bool, default False): If hide_log_command is True and check will be set to False,
             CalledProcessError will not get raise and command will not be printed.
+        log_errors (bool, default True): If log_errors is True, error message will be logged.
 
     Returns:
         tuple: True, out if command succeeded, False, err otherwise.
