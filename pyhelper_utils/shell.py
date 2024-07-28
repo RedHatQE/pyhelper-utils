@@ -19,6 +19,7 @@ def run_command(
     capture_output: bool = True,
     check: bool = True,
     hide_log_command: bool = False,
+    log_errors: bool = True,
     **kwargs: Any,
 ) -> Tuple[bool, str, str]:
     """
@@ -34,6 +35,7 @@ def run_command(
             CalledProcessError
         hide_log_command (bool, default False): If hide_log_command is True and check will be set to False,
             CalledProcessError will not get raise and command will not be printed.
+        log_errors (bool, default True): If log_errors is True, error message will be logged.
 
     Returns:
         tuple: True, out if command succeeded, False, err otherwise.
@@ -64,12 +66,16 @@ def run_command(
     )
 
     if sub_process.returncode != 0:
-        LOGGER.error(error_msg)
+        if log_errors:
+            LOGGER.error(error_msg)
+
         return False, out_decoded, err_decoded
 
     # From this point and onwards we are guaranteed that sub_process.returncode == 0
     if err_decoded and verify_stderr:
-        LOGGER.error(error_msg)
+        if log_errors:
+            LOGGER.error(error_msg)
+
         return False, out_decoded, err_decoded
 
     return True, out_decoded, err_decoded
