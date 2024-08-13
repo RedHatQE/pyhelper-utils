@@ -43,14 +43,17 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False, *args: Any, 
     try:
         return func(*args, **kwargs)
     except (Exception, BaseException) as ex:
+        error_in_exit = getattr(ex, "code", 0) != 0
         if "--pdb" in sys.argv:
-            _, _, tb = sys.exc_info()
-            if not dry_run:
-                ipdb = __import__("ipdb")  # Bypass debug-statements pre-commit hook
-                ipdb.post_mortem(tb)
-        else:
+            if error_in_exit:
+                _, _, tb = sys.exc_info()
+                if not dry_run:
+                    ipdb = __import__("ipdb")  # Bypass debug-statements pre-commit hook
+                    ipdb.post_mortem(tb)
+        elif error_in_exit:
             rich.print(f"Failed to execute with Error {ex}")
             should_raise = True
+
     finally:
         total_time = datetime.timedelta(seconds=time.time() - start_time)
         rich.print(f"Total execution time: {total_time}")
