@@ -1,12 +1,54 @@
+[project]
+name = "pyhelper-utils"
+version = "1.0.6"
+description = "Collective utility functions for python projects"
+authors = [
+  { name = "Meni Yakove", email = "myakove@gmail.com" },
+  { name = "Ruth Netser", email = "rnetser@gmail.com" },
+  { name = "Debarati Basu-Nag", email = "dbasunag@redhat.com" },
+]
+requires-python = "~=3.9"
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "python-simple-logger>=2.0.0,<3",
+  "requests>=2.31.0,<3",
+  "rich>=13.7.1,<14",
+  "ipdb>=0.13.13,<0.14",
+  "python-rrmngmnt>=0.1.32,<0.2",
+]
+
+[project.urls]
+Homepage = "https://github.com/RedHatQE/pyhelper-utils"
+Repository = "https://github.com/RedHatQE/pyhelper-utils"
+Documentation = "https://github.com/RedHatQE/pyhelper-utils/blob/main/README.md"
+
 [tool.coverage.run]
 omit = ["tests/*"]
+
+[dependency-groups]
+tests = ["pytest>=8.1.1,<9", "pytest-cov>=6.0.0,<7", "pytest-mock>=3.14.0,<4"]
+dev = ["ipython"]
 
 [tool.coverage.report]
 fail_under = 90
 skip_empty = true
 
+[tool.uv]
+default-groups = ["tests", "dev"]
+
 [tool.coverage.html]
 directory = ".tests_coverage"
+
+[tool.hatch.build.targets.sdist]
+include = ["pyhelper_utils"]
+
+[tool.hatch.build.targets.wheel]
+include = ["pyhelper_utils"]
 
 [tool.ruff]
 preview = true
@@ -17,51 +59,6 @@ output-format = "grouped"
 [tool.ruff.format]
 exclude = [".git", ".venv", ".mypy_cache", ".tox", "__pycache__"]
 
-[tool.poetry]
-name = "pyhelper-utils"
-version = "0.0.0"
-description = "Collective utility functions for python projects"
-readme = "README.md"
-repository = "https://github.com/RedHatQE/pyhelper-utils"
-authors = [
-  "Meni Yakove <myakove@gmail.com>",
-  "Ruth Netser <rnetser@gmail.com>",
-  "Debarati Basu-Nag <dbasunag@redhat.com>",
-]
-license = "Apache-2.0"
-packages = [{ include = "pyhelper_utils" }]
-homepage = "https://github.com/RedHatQE/pyhelper-utils"
-documentation = "https://github.com/RedHatQE/pyhelper-utils/blob/main/README.md"
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "Operating System :: OS Independent",
-]
-
-[tool.poetry.dependencies]
-python = "^3.9"
-python-simple-logger = "^2.0.0"
-requests = "^2.31.0"
-rich = "^13.7.1"
-ipdb = "^0.13.13"
-python-rrmngmnt = "^0.1.32"
-
-[tool.poetry.group.tests.dependencies]
-pytest = "^8.1.1"
-pytest-cov = "^6.0.0"
-pytest-mock = "^3.14.0"
-
-
-[tool.poetry.group.dev.dependencies]
-ipython = "*"
-
-
-[tool.poetry-dynamic-versioning]
-enable = true
-pattern = "((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)"
-
-[tool.poetry-dynamic-versioning.substitution]
-files = ["VERSION"]
-
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
