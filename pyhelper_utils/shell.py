@@ -1,10 +1,12 @@
-import subprocess
-from typing import Any, List, Optional, Tuple
+from __future__ import annotations
 
+import subprocess
+from typing import Any
+
+from rrmngmnt import Host
 from simple_logger.logger import get_logger
 
 from pyhelper_utils.exceptions import CommandExecFailed
-from rrmngmnt import Host
 
 LOGGER = get_logger(name=__name__)
 
@@ -12,16 +14,16 @@ TIMEOUT_30MIN = 30 * 60
 
 
 def run_command(
-    command: List[str],
+    command: list[str],
     verify_stderr: bool = True,
     shell: bool = False,
-    timeout: Optional[int] = None,
+    timeout: int | None = None,
     capture_output: bool = True,
     check: bool = True,
     hide_log_command: bool = False,
     log_errors: bool = True,
     **kwargs: Any,
-) -> Tuple[bool, str, str]:
+) -> tuple[bool, str, str]:
     """
     Run command locally.
 
@@ -83,11 +85,11 @@ def run_command(
 
 def run_ssh_commands(
     host: Host,
-    commands: List[str],
+    commands: list[Any],
     get_pty: bool = False,
     check_rc: bool = True,
     timeout: int = TIMEOUT_30MIN,
-    tcp_timeout: Optional[float] = None,
+    tcp_timeout: float | None = None,
 ) -> list:
     """
     Run commands on remote host via SSH
@@ -110,8 +112,9 @@ def run_ssh_commands(
     Raise:
         CommandExecFailed: If command failed to execute.
     """
-    results: List[str] = []
-    commands_list: List[List[str]] = commands if isinstance(commands[0], list) else [commands]
+    results: list[str] = []
+    commands_list: list[list[str]] = commands if isinstance(commands[0], list) else [commands]
+
     with host.executor().session(timeout=tcp_timeout) as ssh_session:
         for cmd in commands_list:
             rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
