@@ -12,7 +12,7 @@ classifiers = [
 dependencies = [
   "python-simple-logger>=2.0.0,<3",
   "requests>=2.31.0,<3",
-  "rich>=13.7.1,<14",
+  "rich>=14,<15",
   "ipdb>=0.13.13,<0.14",
   "python-rrmngmnt>=0.1.32,<0.2"
 ]
