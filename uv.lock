@@ -604,18 +604,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pbr"
-version = "6.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "setuptools" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/01/d2/510cc0d218e753ba62a1bc1434651db3cd797a9716a0a66cc714cb4f0935/pbr-6.1.1.tar.gz", hash = "sha256:93ea72ce6989eb2eed99d0f75721474f69ad88128afdef5ac377eb797c4bf76b", size = 125702, upload-time = "2025-02-04T14:28:06.514Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/47/ac/684d71315abc7b1214d59304e23a982472967f6bf4bde5a98f1503f648dc/pbr-6.1.1-py2.py3-none-any.whl", hash = "sha256:38d4daea5d9fa63b3f626131b9d34947fd0c8be9b05a29276870580050a25a76", size = 108997, upload-time = "2025-02-04T14:28:03.168Z" },
-]
-
-[[package]]
 name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -711,7 +699,7 @@ tests = [
 [package.metadata]
 requires-dist = [
     { name = "ipdb", specifier = ">=0.13.13,<0.14" },
-    { name = "python-rrmngmnt", specifier = ">=0.1.32,<0.2" },
+    { name = "python-rrmngmnt", specifier = ">=0.1.32" },
     { name = "python-simple-logger", specifier = ">=2.0.0,<3" },
     { name = "requests", specifier = ">=2.31.0,<3" },
     { name = "rich", specifier = ">=14,<15" },
@@ -789,15 +777,17 @@ wheels = [
 
 [[package]]
 name = "python-rrmngmnt"
-version = "0.1.32"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "netaddr" },
     { name = "paramiko" },
-    { name = "pbr" },
     { name = "six" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/45/60/571982c7af8f5453b86d332041d58076642d26089ea1481ce54e8f7f1305/python-rrmngmnt-0.1.32.zip", hash = "sha256:0953f9e9e3911d4a310282513261ed7572fbc269f78c8e3d0680f84ba9955526", size = 84778, upload-time = "2023-06-06T05:27:04.071Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b8/ee/0cf3a56fe4ea93cb00d90134f9978f85c9d30797007f19b7747cf15c561d/python_rrmngmnt-0.2.0.tar.gz", hash = "sha256:6600a686df8b4d0dd4c420968f385d75bb15a8768f54daee9cd64cc54e2f3c37", size = 116373, upload-time = "2025-05-05T07:58:05.544Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ce/aa/19cdc70f6f427234f4bfbc9ea91845eaf42854cf2e66d025f6c2eb7dde8f/python_rrmngmnt-0.2.0-py3-none-any.whl", hash = "sha256:f6e84c927474408958fd85dc06754caacbd950db7341511440b8dccf1168a67f", size = 49911, upload-time = "2025-05-05T07:58:04.497Z" },
+]
 
 [[package]]
 name = "python-simple-logger"
@@ -835,15 +825,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a1/53/830aa4c3066a8ab0ae9a9955976fb770fe9c6102117c8ec4ab3ea62d89e8/rich-14.0.0.tar.gz", hash = "sha256:82f1bc23a6a21ebca4ae0c45af9bdbc492ed20231dcb63f297d6d1021a9d5725", size = 224078, upload-time = "2025-03-30T14:15:14.23Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/9b/63f4c7ebc259242c89b3acafdb37b41d1185c07ff0011164674e9076b491/rich-14.0.0-py3-none-any.whl", hash = "sha256:1c9491e1951aac09caffd42f448ee3d04e58923ffe14993f6e83068dc395d7e0", size = 243229, upload-time = "2025-03-30T14:15:12.283Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "80.3.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/70/dc/3976b322de9d2e87ed0007cf04cc7553969b6c7b3f48a565d0333748fbcd/setuptools-80.3.1.tar.gz", hash = "sha256:31e2c58dbb67c99c289f51c16d899afedae292b978f8051efaf6262d8212f927", size = 1315082, upload-time = "2025-05-04T18:47:04.397Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/53/7e/5d8af3317ddbf9519b687bd1c39d8737fde07d97f54df65553faca5cffb1/setuptools-80.3.1-py3-none-any.whl", hash = "sha256:ea8e00d7992054c4c592aeb892f6ad51fe1b4d90cc6947cc45c45717c40ec537", size = 1201172, upload-time = "2025-05-04T18:47:02.575Z" },
 ]
 
 [[package]]
