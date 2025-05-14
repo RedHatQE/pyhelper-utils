@@ -1,6 +1,6 @@
 [project]
 name = "pyhelper-utils"
-version = "1.0.15"
+version = "1.0.16"
 description = "Collective utility functions for python projects"
 requires-python = "~=3.9"
 readme = "README.md"
