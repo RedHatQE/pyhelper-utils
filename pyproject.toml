@@ -64,7 +64,7 @@ output-format = "grouped"
 
 [dependency-groups]
 tests = [
-  "pytest>=8.1.1,<9",
+  "pytest>=9,<10",
   "pytest-cov>=7,<8",
   "pytest-mock>=3.14.0,<4"
 ]
