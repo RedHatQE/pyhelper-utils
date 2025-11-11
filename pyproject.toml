@@ -2,7 +2,7 @@
 name = "pyhelper-utils"
 version = "1.0.19"
 description = "Collective utility functions for python projects"
-requires-python = "~=3.9"
+requires-python = ">=3.10"
 readme = "README.md"
 license = "Apache-2.0"
 classifiers = [
@@ -64,7 +64,7 @@ output-format = "grouped"
 
 [dependency-groups]
 tests = [
-  "pytest>=8.1.1,<9",
+  "pytest>=9.0.0,<10",
   "pytest-cov>=7,<8",
   "pytest-mock>=3.14.0,<4"
 ]
