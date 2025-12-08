@@ -42,7 +42,7 @@ repos:
       - id: detect-secrets
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.7
+    rev: v0.14.8
     hooks:
       - id: ruff
         args: [--fix]
@@ -62,7 +62,7 @@ repos:
         args: [--ignore-missing-imports, --disallow-untyped-defs]
 
   - repo: https://github.com/espressif/conventional-precommit-linter
-    rev: v1.10.0 # The version tag you wish to use
+    rev: v1.11.0 # The version tag you wish to use
     hooks:
       - id: conventional-precommit-linter
         stages: [commit-msg]
