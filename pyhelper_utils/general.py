@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 import datetime
 import re
-from time import sleep
+from collections.abc import Callable
 from functools import wraps
 from logging import Logger
-from typing import Any, Callable
+from time import sleep
+from typing import Any
 
 
 def tts(ts: Any) -> int:
@@ -69,7 +71,7 @@ def ignore_exceptions(
             try:
                 return func(*args, **kwargs)
             except Exception as ex:
-                for idx in range(0, retry):
+                for idx in range(retry):
                     try:
                         sleep(retry_interval)
                         return func(*args, **kwargs)

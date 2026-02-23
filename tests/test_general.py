@@ -1,6 +1,8 @@
-from pyhelper_utils.general import stt, tts, ignore_exceptions
-import pytest
 import logging
+
+import pytest
+
+from pyhelper_utils.general import ignore_exceptions, stt, tts
 
 
 @pytest.fixture
@@ -48,6 +50,6 @@ def test_ignore_exception_raise_final_exception():
 def test_stt():
     assert stt(3600) == "1 hour"
     assert stt(3600 * 24) == "1 day"
-    assert stt((60 * 60 * 14 + 65)) == "14 hours and 1 minute and 5 seconds"
+    assert stt(60 * 60 * 14 + 65) == "14 hours and 1 minute and 5 seconds"
     assert stt(30) == "30 seconds"
     assert stt(90) == "1 minute and 30 seconds"

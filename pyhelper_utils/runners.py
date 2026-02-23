@@ -1,8 +1,10 @@
-import time
-import rich
 import datetime
 import sys
-from typing import Callable, Any
+import time
+from collections.abc import Callable
+from typing import Any
+
+import rich
 from simple_logger.logger import get_logger
 
 LOGGER = get_logger(name="runners")

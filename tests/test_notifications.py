@@ -1,7 +1,7 @@
-from pyhelper_utils.notifications import send_slack_message
 import pytest
 from simple_logger.logger import get_logger
 
+from pyhelper_utils.notifications import send_slack_message
 
 LOGGER = get_logger(name="test-notifications")
 WEBHOOK_URL = "https://nonexists.non"
