@@ -33,11 +33,10 @@ def send_slack_message(
                 headers={"Content-Type": "application/json"},
                 timeout=post_timout,
             )
-            if response.status_code != 200:
-                if logger:
-                    logger.error(
-                        f"Request to slack returned an error {response.status_code} with the following message: {response.text}"
-                    )
+            if response.status_code != 200 and logger:
+                logger.error(
+                    f"Request to slack returned an error {response.status_code} with the following message: {response.text}"
+                )
     except Exception as ex:
         if logger:
             logger.error(f"Failed to send slack message. error: {ex}")

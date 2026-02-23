@@ -44,7 +44,7 @@ def function_runner_with_pdb(func: Callable, dry_run: bool = False, *args: Any, 
 
     try:
         return func(*args, **kwargs)
-    except Exception as ex:
+    except Exception as ex:  # noqa: BLE001
         if "--pdb" in sys.argv:
             _, _, tb = sys.exc_info()
             if not dry_run:

@@ -70,16 +70,16 @@ def ignore_exceptions(
         def inner(*args: Any, **kwargs: Any) -> Any:
             try:
                 return func(*args, **kwargs)
-            except Exception as ex:
+            except Exception as ex:  # noqa: BLE001
                 for idx in range(retry):
                     try:
                         sleep(retry_interval)
                         return func(*args, **kwargs)
-                    except Exception as retry_ex:
+                    except Exception:
                         if idx + 1 < retry:
                             continue
                         if raise_final_exception:
-                            raise retry_ex
+                            raise
                 if logger:
                     logger.error(f"{func.__name__} error: {ex}")
                 return return_on_error
@@ -110,8 +110,9 @@ def stt(seconds: int) -> str:
     time_str = ""
     total_seconds = datetime.timedelta(seconds=seconds)
     days = total_seconds.days
-    total_time = datetime.datetime.strptime(str(datetime.timedelta(seconds=total_seconds.seconds)), "%H:%M:%S")
-    hour, minute, second = total_time.hour, total_time.minute, total_time.second
+    remaining_seconds = total_seconds.seconds
+    hour, remainder = divmod(remaining_seconds, 3600)
+    minute, second = divmod(remainder, 60)
     if days:
         time_str += f"{days} {'days' if days > 1 else 'day'}"
 
@@ -125,7 +126,7 @@ def stt(seconds: int) -> str:
             time_str += " and "
         time_str += f"{minute} {'minutes' if minute > 1 else 'minute'}"
 
-    if total_time.second:
+    if second:
         if hour or minute:
             time_str += " and "
         time_str += f"{second} {'seconds' if second > 1 else 'second'}"
