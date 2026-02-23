@@ -1,6 +1,8 @@
-from pyhelper_utils.runners import function_runner_with_pdb
-import pytest
 import sys
+
+import pytest
+
+from pyhelper_utils.runners import function_runner_with_pdb
 
 
 @pytest.fixture

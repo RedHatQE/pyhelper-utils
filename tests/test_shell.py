@@ -1,10 +1,12 @@
 import shlex
-from subprocess import CalledProcessError
-import pytest
 import subprocess
+from subprocess import CalledProcessError
+
+import pytest
+from rrmngmnt import Host, ssh
+
 from pyhelper_utils.exceptions import CommandExecFailed
 from pyhelper_utils.shell import run_command, run_ssh_commands
-from rrmngmnt import Host, ssh
 
 ERROR_MESSAGE = "Expected value {expected}, actual value {actual}"
 SUCCESSFUL_MESSAGE = "worked"

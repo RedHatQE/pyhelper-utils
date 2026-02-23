@@ -1,13 +1,13 @@
-from logging import Logger
-from typing import Optional
-import requests
 import json
+from logging import Logger
+
+import requests
 
 
 def send_slack_message(
     message: str,
-    webhook_url: Optional[str] = None,
-    logger: Optional[Logger] = None,
+    webhook_url: str | None = None,
+    logger: Logger | None = None,
     post_timout: int = 30,
     raise_on_error: bool = True,
 ) -> None:
@@ -33,11 +33,10 @@ def send_slack_message(
                 headers={"Content-Type": "application/json"},
                 timeout=post_timout,
             )
-            if response.status_code != 200:
-                if logger:
-                    logger.error(
-                        f"Request to slack returned an error {response.status_code} with the following message: {response.text}"
-                    )
+            if response.status_code != 200 and logger:
+                logger.error(
+                    f"Request to slack returned an error {response.status_code} with the following message: {response.text}"
+                )
     except Exception as ex:
         if logger:
             logger.error(f"Failed to send slack message. error: {ex}")
