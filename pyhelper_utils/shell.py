@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import contextlib
 import subprocess
 from typing import Any
+
+import paramiko
 
 from rrmngmnt import Host
 from simple_logger.logger import get_logger
@@ -115,13 +118,24 @@ def run_ssh_commands(
     results: list[str] = []
     commands_list: list[list[str]] = commands if isinstance(commands[0], list) else [commands]
 
-    with host.executor().session(timeout=tcp_timeout) as ssh_session:
-        for cmd in commands_list:
-            rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
-            LOGGER.info(f"[SSH][{host.fqdn}] Executed: {' '.join(cmd)}, rc:{rc}, out: {out}, error: {err}")
-            if rc and check_rc:
-                raise CommandExecFailed(name=" ".join(cmd), err=err)
+    executor = host.executor()
+    try:
+        with executor.session(timeout=tcp_timeout) as ssh_session:
+            for cmd in commands_list:
+                rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
+                LOGGER.info(f"[SSH][{host.fqdn}] Executed: {' '.join(cmd)}, rc:{rc}, out: {out}, error: {err}")
+                if rc and check_rc:
+                    raise CommandExecFailed(name=" ".join(cmd), err=err)
 
-            results.append(out)
+                results.append(out)
+    finally:
+        # Workaround for Paramiko's ProxyCommand.close() file descriptors leaks bug
+        # https://github.com/paramiko/paramiko/pull/2570
+        sock = getattr(executor, "sock", None)
+        if isinstance(sock, paramiko.ProxyCommand):
+            with contextlib.suppress(OSError):
+                sock.close()
+            with contextlib.suppress(Exception):
+                sock.process.wait(timeout=5)
 
     return results
