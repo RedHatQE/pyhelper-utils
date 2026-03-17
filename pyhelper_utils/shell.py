@@ -5,7 +5,6 @@ import subprocess
 from typing import Any
 
 import paramiko
-
 from rrmngmnt import Host
 from simple_logger.logger import get_logger
 
