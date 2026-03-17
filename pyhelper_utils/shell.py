@@ -134,7 +134,14 @@ def run_ssh_commands(
         if isinstance(sock, paramiko.ProxyCommand):
             with contextlib.suppress(OSError):
                 sock.close()
-            with contextlib.suppress(Exception):
+            try:
                 sock.process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                with contextlib.suppress(OSError):
+                    sock.process.kill()
+                with contextlib.suppress(OSError):
+                    sock.process.wait(timeout=5)
+            except OSError as exp:
+                LOGGER.debug(f"ProxyCommand cleanup error: {exp}")
 
     return results

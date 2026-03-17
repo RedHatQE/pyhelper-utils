@@ -802,6 +802,7 @@ version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "ipdb" },
+    { name = "paramiko" },
     { name = "python-rrmngmnt" },
     { name = "python-simple-logger" },
     { name = "requests" },
@@ -823,6 +824,7 @@ tests = [
 [package.metadata]
 requires-dist = [
     { name = "ipdb", specifier = ">=0.13.13,<0.14" },
+    { name = "paramiko", specifier = ">=4,<5" },
     { name = "python-rrmngmnt", specifier = ">=0.1.32" },
     { name = "python-simple-logger", specifier = ">=2.0.0,<3" },
     { name = "requests", specifier = ">=2.31.0,<3" },
