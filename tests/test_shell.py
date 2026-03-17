@@ -111,7 +111,7 @@ def test_run_ssh_commands_proxycommand_cleanup_kill_failure(mocked_host, mocker)
     executor = mocked_host.executor()
     mock_sock = mocker.MagicMock(spec=paramiko.ProxyCommand)
     mock_sock.process = mocker.MagicMock()
-    mock_sock.process.wait.side_effect = subprocess.TimeoutExpired(cmd="proxy", timeout=5)
+    mock_sock.process.wait.side_effect = [subprocess.TimeoutExpired(cmd="proxy", timeout=5), None]
     mock_sock.process.kill.side_effect = OSError("kill failed")
     executor.sock = mock_sock
 
