@@ -58,7 +58,7 @@ repos:
     hooks:
       - id: mypy
         exclude: ^(tests/)
-        additional_dependencies: [types-requests]
+        additional_dependencies: [types-requests, types-paramiko]
         args: [--ignore-missing-imports, --disallow-untyped-defs]
 
   - repo: https://github.com/espressif/conventional-precommit-linter

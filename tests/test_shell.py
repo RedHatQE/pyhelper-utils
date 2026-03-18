@@ -2,6 +2,7 @@ import shlex
 import subprocess
 from subprocess import CalledProcessError
 
+import paramiko
 import pytest
 from rrmngmnt import Host, ssh
 
@@ -72,3 +73,81 @@ def test_run_ssh_commands_command_failure(mocked_host):
         test_session.run_cmd.return_value = (True, "", None)
     result = run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
     assert result == [""]
+
+
+def test_run_ssh_commands_proxycommand_cleanup(mocked_host, mocker):
+    executor = mocked_host.executor()
+    mock_sock = mocker.MagicMock(spec=paramiko.ProxyCommand)
+    mock_sock.process = mocker.MagicMock()
+    executor.sock = mock_sock
+
+    with executor.session() as test_session:
+        test_session.run_cmd.return_value = (False, "", None)
+
+    run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
+
+    mock_sock.close.assert_called_once()
+    mock_sock.process.wait.assert_called_once_with(timeout=5)
+
+
+def test_run_ssh_commands_proxycommand_cleanup_timeout(mocked_host, mocker):
+    executor = mocked_host.executor()
+    mock_sock = mocker.MagicMock(spec=paramiko.ProxyCommand)
+    mock_sock.process = mocker.MagicMock()
+    mock_sock.process.wait.side_effect = [subprocess.TimeoutExpired(cmd="proxy", timeout=5), None]
+    executor.sock = mock_sock
+
+    with executor.session() as test_session:
+        test_session.run_cmd.return_value = (False, "", None)
+
+    run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
+
+    mock_sock.close.assert_called_once()
+    mock_sock.process.kill.assert_called_once()
+    assert mock_sock.process.wait.call_count == 2
+
+
+def test_run_ssh_commands_proxycommand_cleanup_kill_failure(mocked_host, mocker):
+    executor = mocked_host.executor()
+    mock_sock = mocker.MagicMock(spec=paramiko.ProxyCommand)
+    mock_sock.process = mocker.MagicMock()
+    mock_sock.process.wait.side_effect = [subprocess.TimeoutExpired(cmd="proxy", timeout=5), None]
+    mock_sock.process.kill.side_effect = OSError("kill failed")
+    executor.sock = mock_sock
+
+    with executor.session() as test_session:
+        test_session.run_cmd.return_value = (False, "", None)
+
+    run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
+
+    mock_sock.close.assert_called_once()
+    mock_sock.process.kill.assert_called_once()
+
+
+def test_run_ssh_commands_proxycommand_cleanup_unexpected_exception(mocked_host, mocker):
+    executor = mocked_host.executor()
+    mock_sock = mocker.MagicMock(spec=paramiko.ProxyCommand)
+    mock_sock.process = mocker.MagicMock()
+    mock_sock.process.wait.side_effect = OSError("unexpected")
+    executor.sock = mock_sock
+
+    with executor.session() as test_session:
+        test_session.run_cmd.return_value = (False, "", None)
+
+    run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
+
+    mock_sock.close.assert_called_once()
+    mock_sock.process.kill.assert_not_called()
+
+
+def test_run_ssh_commands_no_proxycommand(mocked_host, mocker):
+    executor = mocked_host.executor()
+    mock_sock = mocker.MagicMock()
+    executor.sock = mock_sock
+
+    with executor.session() as test_session:
+        test_session.run_cmd.return_value = (False, "", None)
+
+    run_ssh_commands(host=mocked_host, commands=[TEST_COMMAND], check_rc=False)
+
+    mock_sock.close.assert_not_called()
