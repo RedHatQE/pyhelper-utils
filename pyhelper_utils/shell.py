@@ -113,7 +113,7 @@ def _execute_ssh_commands(
     Returns:
         list: List of commands output.
 
-    Raise:
+    Raises:
         CommandExecFailed: If command failed to execute.
     """
     results: list[str] = []
@@ -183,7 +183,7 @@ def run_ssh_commands(
     Returns:
         list: List of commands output.
 
-    Raise:
+    Raises:
         CommandExecFailed: If command failed to execute.
         TimeoutExpiredError: If wait_timeout > 0 and retries are exhausted.
     """
