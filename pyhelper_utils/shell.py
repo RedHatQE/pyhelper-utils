@@ -2,17 +2,20 @@ from __future__ import annotations
 
 import contextlib
 import subprocess
-from typing import Any
+from typing import Any, Final
 
 import paramiko
 from rrmngmnt import Host
 from simple_logger.logger import get_logger
+from timeout_sampler import TimeoutSampler
 
 from pyhelper_utils.exceptions import CommandExecFailed
 
 LOGGER = get_logger(name=__name__)
 
 TIMEOUT_30MIN = 30 * 60
+
+DEFAULT_SSH_EXCEPTIONS: Final[dict[type[Exception], list[str]]] = {paramiko.SSHException: []}
 
 
 def run_command(
@@ -85,37 +88,35 @@ def run_command(
     return True, out_decoded, err_decoded
 
 
-def run_ssh_commands(
+def _execute_ssh_commands(
     host: Host,
-    commands: list[Any],
-    get_pty: bool = False,
-    check_rc: bool = True,
-    timeout: int = TIMEOUT_30MIN,
-    tcp_timeout: float | None = None,
-) -> list:
+    commands_list: list[list[str]],
+    get_pty: bool,
+    check_rc: bool,
+    timeout: int,
+    tcp_timeout: float | None,
+) -> list[str]:
     """
-    Run commands on remote host via SSH
+    Execute SSH commands on a remote host (single attempt).
+
+    This is a private helper used by ``run_ssh_commands``. It opens an SSH
+    session, runs each command, and performs ProxyCommand cleanup.
 
     Args:
         host (Host): rrmngmnt host to execute the commands from.
-        commands (list): List of multiple command lists [[cmd1, cmd2, cmd3]] or a list with a single command [cmd]
-            Examples:
-                 single command: shlex.split("sudo reboot"),
-                 multiple commands: [shlex.split("sleep 5"), shlex.split("date")]
-
-        get_pty (bool): get_pty parameter for remote session (equivalent to -t argument for ssh)
-        check_rc (bool): if True checks command return code and raises if rc != 0
-        timeout (int): ssh exec timeout
-        tcp_timeout (float): an optional timeout (in seconds) for the TCP connect
+        commands_list (list): Normalised list of command lists.
+        get_pty (bool): get_pty parameter for remote session.
+        check_rc (bool): if True checks command return code and raises if rc != 0.
+        timeout (int): ssh exec timeout.
+        tcp_timeout (float): an optional timeout (in seconds) for the TCP connect.
 
     Returns:
         list: List of commands output.
 
-    Raise:
+    Raises:
         CommandExecFailed: If command failed to execute.
     """
     results: list[str] = []
-    commands_list: list[list[str]] = commands if isinstance(commands[0], list) else [commands]
 
     executor = host.executor()
     try:
@@ -145,3 +146,71 @@ def run_ssh_commands(
                 LOGGER.debug(f"ProxyCommand cleanup error: {exp}")
 
     return results
+
+
+def run_ssh_commands(
+    host: Host,
+    commands: list[Any],
+    get_pty: bool = False,
+    check_rc: bool = True,
+    timeout: int = TIMEOUT_30MIN,
+    tcp_timeout: float | None = None,
+    wait_timeout: int = 0,
+    sleep: int = 5,
+    exceptions_dict: dict[type[Exception], list[str]] | None = DEFAULT_SSH_EXCEPTIONS,
+) -> list[str]:
+    """
+    Run commands on remote host via SSH
+
+    Args:
+        host (Host): rrmngmnt host to execute the commands from.
+        commands (list): List of multiple command lists [[cmd1, cmd2, cmd3]] or a list with a single command [cmd]
+            Examples:
+                 single command: shlex.split("sudo reboot"),
+                 multiple commands: [shlex.split("sleep 5"), shlex.split("date")]
+
+        get_pty (bool): get_pty parameter for remote session (equivalent to -t argument for ssh)
+        check_rc (bool): if True checks command return code and raises if rc != 0
+        timeout (int): ssh exec timeout
+        tcp_timeout (float): an optional timeout (in seconds) for the TCP connect
+        wait_timeout (int): total retry timeout in seconds. 0 means no retry (default behavior).
+        sleep (int): seconds between retry attempts (default 5). Only used when ``wait_timeout > 0``
+        exceptions_dict (dict | None): exception types that trigger a retry.
+            Defaults to ``DEFAULT_SSH_EXCEPTIONS`` (``{paramiko.SSHException: []}``).
+            Pass ``None`` to catch all exceptions.
+            Only used when ``wait_timeout > 0``.
+
+    Returns:
+        list: List of commands output.
+
+    Raises:
+        CommandExecFailed: If command failed to execute.
+        TimeoutExpiredError: If wait_timeout > 0 and retries are exhausted.
+    """
+    commands_list: list[list[str]] = commands if isinstance(commands[0], list) else [commands]
+
+    if wait_timeout == 0:
+        return _execute_ssh_commands(
+            host=host,
+            commands_list=commands_list,
+            get_pty=get_pty,
+            check_rc=check_rc,
+            timeout=timeout,
+            tcp_timeout=tcp_timeout,
+        )
+
+    for sample in TimeoutSampler(
+        wait_timeout=wait_timeout,
+        sleep=sleep,
+        func=_execute_ssh_commands,
+        exceptions_dict=exceptions_dict,
+        host=host,
+        commands_list=commands_list,
+        get_pty=get_pty,
+        check_rc=check_rc,
+        timeout=timeout,
+        tcp_timeout=tcp_timeout,
+    ):
+        return sample
+
+    return []  # pragma: no cover

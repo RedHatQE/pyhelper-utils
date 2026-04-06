@@ -807,6 +807,7 @@ dependencies = [
     { name = "python-simple-logger" },
     { name = "requests" },
     { name = "rich" },
+    { name = "timeout-sampler" },
 ]
 
 [package.dev-dependencies]
@@ -829,6 +830,7 @@ requires-dist = [
     { name = "python-simple-logger", specifier = ">=2.0.0,<3" },
     { name = "requests", specifier = ">=2.31.0,<3" },
     { name = "rich", specifier = ">=14,<15" },
+    { name = "timeout-sampler", specifier = ">=0.0.29" },
 ]
 
 [package.metadata.requires-dev]
@@ -991,6 +993,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/28/e3/55dcc2cfbc3ca9c29
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f1/7b/ce1eafaf1a76852e2ec9b22edecf1daa58175c090266e9f6c64afcd81d91/stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695", size = 24521, upload-time = "2023-09-30T13:58:03.53Z" },
 ]
+
+[[package]]
+name = "timeout-sampler"
+version = "1.0.22"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "python-simple-logger" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/32/18/af47c7b684056e7227fe5e81f024518cbfaab51d98923768506387587ba3/timeout_sampler-1.0.22.tar.gz", hash = "sha256:4f4b7abc32eb56a80642c8584a06ea9cea6802387f572cb28f1deda1684185a7", size = 21500, upload-time = "2025-11-18T07:06:51.206Z" }
 
 [[package]]
 name = "tomli"
