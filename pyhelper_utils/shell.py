@@ -209,6 +209,7 @@ def run_ssh_commands(
         sleep=sleep,
         func=_execute_ssh_commands,
         exceptions_dict=exceptions_dict,
+        print_func_args=not hide_log_command,
         host=host,
         commands_list=commands_list,
         get_pty=get_pty,
