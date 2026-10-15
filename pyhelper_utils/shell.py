@@ -95,6 +95,7 @@ def _execute_ssh_commands(
     check_rc: bool,
     timeout: int,
     tcp_timeout: float | None,
+    hide_log_command: bool = False,
 ) -> list[str]:
     """
     Execute SSH commands on a remote host (single attempt).
@@ -109,6 +110,7 @@ def _execute_ssh_commands(
         check_rc (bool): if True checks command return code and raises if rc != 0.
         timeout (int): ssh exec timeout.
         tcp_timeout (float): an optional timeout (in seconds) for the TCP connect.
+        hide_log_command (bool): if True, replaces the command with "Hide By User" in logs and errors.
 
     Returns:
         list: List of commands output.
@@ -123,9 +125,10 @@ def _execute_ssh_commands(
         with executor.session(timeout=tcp_timeout) as ssh_session:
             for cmd in commands_list:
                 rc, out, err = ssh_session.run_cmd(cmd=cmd, get_pty=get_pty, timeout=timeout)
-                LOGGER.info(f"[SSH][{host.fqdn}] Executed: {' '.join(cmd)}, rc:{rc}, out: {out}, error: {err}")
+                command_for_log = "Hide By User" if hide_log_command else " ".join(cmd)
+                LOGGER.info(f"[SSH][{host.fqdn}] Executed: {command_for_log}, rc:{rc}, out: {out}, error: {err}")
                 if rc and check_rc:
-                    raise CommandExecFailed(name=" ".join(cmd), err=err)
+                    raise CommandExecFailed(name=command_for_log, err=err)
 
                 results.append(out)
     finally:
@@ -158,6 +161,7 @@ def run_ssh_commands(
     wait_timeout: int = 0,
     sleep: int = 5,
     exceptions_dict: dict[type[Exception], list[str]] | None = DEFAULT_SSH_EXCEPTIONS,
+    hide_log_command: bool = False,
 ) -> list[str]:
     """
     Run commands on remote host via SSH
@@ -179,7 +183,7 @@ def run_ssh_commands(
             Defaults to ``DEFAULT_SSH_EXCEPTIONS`` (``{paramiko.SSHException: []}``).
             Pass ``None`` to catch all exceptions.
             Only used when ``wait_timeout > 0``.
-
+        hide_log_command (bool): if True, replaces the command with "Hide By User" in logs and errors.
     Returns:
         list: List of commands output.
 
@@ -197,6 +201,7 @@ def run_ssh_commands(
             check_rc=check_rc,
             timeout=timeout,
             tcp_timeout=tcp_timeout,
+            hide_log_command=hide_log_command,
         )
 
     for sample in TimeoutSampler(
@@ -204,12 +209,14 @@ def run_ssh_commands(
         sleep=sleep,
         func=_execute_ssh_commands,
         exceptions_dict=exceptions_dict,
+        print_func_args=not hide_log_command,
         host=host,
         commands_list=commands_list,
         get_pty=get_pty,
         check_rc=check_rc,
         timeout=timeout,
         tcp_timeout=tcp_timeout,
+        hide_log_command=hide_log_command,
     ):
         return sample
 

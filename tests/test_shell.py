@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import subprocess
 from unittest.mock import MagicMock
 
@@ -43,6 +44,49 @@ def mock_host_with_executor(mock_host, mock_executor):
 class TestRunSshCommandsNoRetry:
     """Tests for run_ssh_commands without retry (wait_timeout=0, default)."""
 
+    def test_hide_log_command_redacts_command_but_keeps_diagnostics(
+        self,
+        caplog,
+        mock_host_with_executor,
+        mock_ssh_session,
+    ):
+        mock_ssh_session.run_cmd.return_value = (0, "command output", "command error")
+        caplog.set_level(level=logging.INFO, logger="pyhelper_utils.shell")
+
+        result = run_ssh_commands(
+            host=mock_host_with_executor,
+            commands=["echo", "sensitive-payload"],
+            hide_log_command=True,
+        )
+
+        assert result == ["command output"]
+        assert "sensitive-payload" not in caplog.text
+        assert "Hide By User" in caplog.text
+        assert "test-host.example.com" in caplog.text
+        assert "rc:0" in caplog.text
+        assert "out: command output" in caplog.text
+        assert "error: command error" in caplog.text
+
+    def test_hide_log_command_redacts_failing_command_exception(self, mock_host_with_executor, mock_ssh_session):
+        mock_ssh_session.run_cmd.return_value = (1, "", "command failed")
+
+        with pytest.raises(CommandExecFailed) as exc_info:
+            run_ssh_commands(
+                host=mock_host_with_executor,
+                commands=["echo", "sensitive-payload"],
+                hide_log_command=True,
+            )
+
+        assert exc_info.value.name == "Hide By User"
+        assert "sensitive-payload" not in str(exc_info.value)
+
+    def test_command_is_logged_by_default(self, caplog, mock_host_with_executor, mock_ssh_session):
+        caplog.set_level(level=logging.INFO, logger="pyhelper_utils.shell")
+
+        run_ssh_commands(host=mock_host_with_executor, commands=["echo", "visible-command"])
+
+        assert "echo visible-command" in caplog.text
+
     def test_single_command_success(self, mock_host_with_executor, mock_ssh_session):
         result = run_ssh_commands(host=mock_host_with_executor, commands=["echo", "hello"])
         assert result == ["output"]
@@ -73,6 +117,26 @@ class TestRunSshCommandsNoRetry:
 
 class TestRunSshCommandsWithRetry:
     """Tests for run_ssh_commands with retry (wait_timeout > 0)."""
+
+    def test_hide_log_command_is_forwarded_through_retry_path(
+        self,
+        caplog,
+        mock_host_with_executor,
+        mock_ssh_session,
+    ):
+        caplog.set_level(level=logging.INFO, logger="pyhelper_utils.shell")
+
+        result = run_ssh_commands(
+            host=mock_host_with_executor,
+            commands=["echo", "sensitive-payload"],
+            wait_timeout=60,
+            sleep=1,
+            hide_log_command=True,
+        )
+
+        assert result == ["output"]
+        assert "sensitive-payload" not in caplog.text
+        assert "Hide By User" in caplog.text
 
     def test_retry_on_ssh_exception(self, mock_host_with_executor, mock_ssh_session):
         """When SSHException occurs, retry should eventually succeed."""
